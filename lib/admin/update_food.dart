@@ -1,56 +1,59 @@
+// ignore_for_file: library_private_types_in_public_api
+
 import 'dart:io';
 
+import 'package:flutter/material.dart';
+import 'package:food_app/app/utils/app_widget.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_storage/firebase_storage.dart';
-import 'package:flutter/material.dart';
-import 'package:image_picker/image_picker.dart';
-import 'package:random_string/random_string.dart';
 
-import '../app/utils/app_widget.dart';
+class UpdateFoodItem extends StatefulWidget {
+  final String foodItemId;
 
-class AddFood extends StatefulWidget {
-  const AddFood({Key? key}) : super(key: key);
+  const UpdateFoodItem({super.key, required this.foodItemId});
 
   @override
-  _AddFoodState createState() => _AddFoodState();
+  _UpdateFoodItemState createState() => _UpdateFoodItemState();
 }
 
-class _AddFoodState extends State<AddFood> {
-  final List<String> fooditems = ['Ice-cream', 'Burger', 'Salad', 'Pizza', 'New Category'];
-  String? value;
-  TextEditingController namecontroller = TextEditingController();
-  TextEditingController pricecontroller = TextEditingController();
-  TextEditingController detailcontroller = TextEditingController();
+class _UpdateFoodItemState extends State<UpdateFoodItem> {
+  TextEditingController nameController = TextEditingController();
+  TextEditingController priceController = TextEditingController();
+  TextEditingController detailController = TextEditingController();
   final ImagePicker _picker = ImagePicker();
+    final List<String> fooditems = ['Ice-cream', 'Burger', 'Salad', 'Pizza', 'New Category'];
   File? selectedImage;
+  String? value;
+
+  @override
+  void initState() {
+    super.initState();
+    _loadFoodItemDetails();
+  }
+
+  void _loadFoodItemDetails() async {
+    DocumentSnapshot foodItemSnapshot =
+        await FirebaseFirestore.instance.collection("foods").doc(widget.foodItemId).get();
+    if (foodItemSnapshot.exists) {
+      setState(() {
+        nameController.text = foodItemSnapshot["Name"];
+        priceController.text = foodItemSnapshot["Price"];
+        detailController.text = foodItemSnapshot["Detail"];
+        value = foodItemSnapshot["Category"];
+      });
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        leading: GestureDetector(
-          onTap: () {
-            Navigator.pop(context);
-          },
-          child: const Icon(
-            Icons.arrow_back_ios_new_outlined,
-            color: Color(0xFF373866),
-          ),
-        ),
-        centerTitle: true,
-        title: Text(
-          "Add Item",
-          style: AppWidget.HeadlinextFieldStyle()
-        ),
+        title: const Text("Update Food Item"),
       ),
       body: SingleChildScrollView(
         child: Container(
-          margin: const EdgeInsets.only(
-            left: 20.0,
-            right: 20.0,
-            top: 20.0,
-            bottom: 50.0,
-          ),
+          margin: const EdgeInsets.all(20.0),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
@@ -58,9 +61,7 @@ class _AddFoodState extends State<AddFood> {
                 "Upload the Item Picture",
                 style: AppWidget.SemiBoldTextFieldStyle(),
               ),
-              const SizedBox(
-                height: 20.0,
-              ),
+              const SizedBox(height: 20.0),
               selectedImage == null
                   ? GestureDetector(
                       onTap: getImage,
@@ -104,16 +105,12 @@ class _AddFoodState extends State<AddFood> {
                         ),
                       ),
                     ),
-              const SizedBox(
-                height: 30.0,
-              ),
+              const SizedBox(height: 30.0),
               Text(
                 "Item Name",
                 style: AppWidget.SemiBoldTextFieldStyle(),
               ),
-              const SizedBox(
-                height: 10.0,
-              ),
+              const SizedBox(height: 10.0),
               Container(
                 padding: const EdgeInsets.symmetric(horizontal: 20.0),
                 width: MediaQuery.of(context).size.width,
@@ -122,24 +119,20 @@ class _AddFoodState extends State<AddFood> {
                   borderRadius: BorderRadius.circular(10),
                 ),
                 child: TextField(
-                  controller: namecontroller,
-                  decoration: InputDecoration(
+                  controller: nameController,
+                  decoration: const InputDecoration(
                     border: InputBorder.none,
                     hintText: "Enter Item Name",
-                    hintStyle: AppWidget.SemiBoldTextFieldStyle(),
+                    hintStyle: TextStyle(fontSize: 16.0),
                   ),
                 ),
               ),
-              const SizedBox(
-                height: 30.0,
-              ),
+              const SizedBox(height: 30.0),
               Text(
                 "Item Price",
                 style: AppWidget.SemiBoldTextFieldStyle(),
               ),
-              const SizedBox(
-                height: 10.0,
-              ),
+              const SizedBox(height: 10.0),
               Container(
                 padding: const EdgeInsets.symmetric(horizontal: 20.0),
                 width: MediaQuery.of(context).size.width,
@@ -148,24 +141,20 @@ class _AddFoodState extends State<AddFood> {
                   borderRadius: BorderRadius.circular(10),
                 ),
                 child: TextField(
-                  controller: pricecontroller,
-                  decoration: InputDecoration(
+                  controller: priceController,
+                  decoration: const InputDecoration(
                     border: InputBorder.none,
                     hintText: "Enter Item Price",
-                    hintStyle: AppWidget.SemiBoldTextFieldStyle(),
+                    hintStyle: TextStyle(fontSize: 16.0),
                   ),
                 ),
               ),
-              const SizedBox(
-                height: 30.0,
-              ),
+              const SizedBox(height: 30.0),
               Text(
                 "Item Detail",
                 style: AppWidget.SemiBoldTextFieldStyle(),
               ),
-              const SizedBox(
-                height: 10.0,
-              ),
+              const SizedBox(height: 10.0),
               Container(
                 padding: const EdgeInsets.symmetric(horizontal: 20.0),
                 width: MediaQuery.of(context).size.width,
@@ -175,24 +164,20 @@ class _AddFoodState extends State<AddFood> {
                 ),
                 child: TextField(
                   maxLines: 6,
-                  controller: detailcontroller,
-                  decoration: InputDecoration(
+                  controller: detailController,
+                  decoration: const InputDecoration(
                     border: InputBorder.none,
                     hintText: "Enter Item Detail",
-                    hintStyle: AppWidget.LightTextFieldStyle(),
+                    hintStyle: TextStyle(fontSize: 16.0),
                   ),
                 ),
               ),
-              const SizedBox(
-                height: 20.0,
-              ),
+              const SizedBox(height: 20.0),
               Text(
                 "Select Category",
                 style: AppWidget.SemiBoldTextFieldStyle(),
               ),
-              const SizedBox(
-                height: 20.0,
-              ),
+              const SizedBox(height: 20.0),
               Container(
                 padding: const EdgeInsets.symmetric(horizontal: 10.0),
                 width: MediaQuery.of(context).size.width,
@@ -225,9 +210,7 @@ class _AddFoodState extends State<AddFood> {
                   ),
                 ),
               ),
-              const SizedBox(
-                height: 30.0,
-              ),
+              const SizedBox(height: 30.0),
               GestureDetector(
                 onTap: uploadItem,
                 child: Center(
@@ -243,7 +226,7 @@ class _AddFoodState extends State<AddFood> {
                       ),
                       child: const Center(
                         child: Text(
-                          "Add",
+                          "Update",
                           style: TextStyle(
                             color: Colors.white,
                             fontSize: 22.0,
@@ -263,38 +246,37 @@ class _AddFoodState extends State<AddFood> {
   }
 
   Future getImage() async {
-    var image = await _picker.pickImage(source: ImageSource.gallery);
+    final image = await _picker.pickImage(source: ImageSource.gallery);
     selectedImage = File(image!.path);
     setState(() {});
   }
 
   Future<void> uploadItem() async {
     if (selectedImage != null &&
-        namecontroller.text != "" &&
-        pricecontroller.text != "" &&
-        detailcontroller.text != "" &&
+        nameController.text != "" &&
+        priceController.text != "" &&
+        detailController.text != "" &&
         value != null) {
-      String addId = randomAlphaNumeric(10);
       Reference firebaseStorageRef =
-          FirebaseStorage.instance.ref().child("foodImages").child(addId);
+          FirebaseStorage.instance.ref().child("foodImages").child(widget.foodItemId);
       final UploadTask task = firebaseStorageRef.putFile(selectedImage!);
 
       var downloadUrl = await (await task).ref.getDownloadURL();
 
-      Map<String, dynamic> addItem = {
+      Map<String, dynamic> updateItem = {
         "Image": downloadUrl,
-        "Name": namecontroller.text,
-        "Price": pricecontroller.text,
-        "Detail": detailcontroller.text,
+        "Name": nameController.text,
+        "Price": priceController.text,
+        "Detail": detailController.text,
         "Category": value
       };
 
       try {
-        await FirebaseFirestore.instance.collection("foods").add(addItem);
+        await FirebaseFirestore.instance.collection("foods").doc(widget.foodItemId).update(updateItem);
         ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
           backgroundColor: Colors.orangeAccent,
           content: Text(
-            "Food Item has been added Successfully",
+            "Food Item has been updated Successfully",
             style: TextStyle(fontSize: 18.0),
           ),
         ));
@@ -302,7 +284,7 @@ class _AddFoodState extends State<AddFood> {
         ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
           backgroundColor: Colors.orangeAccent,
           content: Text(
-            "Error adding food item",
+            "Error updating food item",
             style: TextStyle(fontSize: 18.0),
           ),
         ));

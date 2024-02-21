@@ -1,9 +1,9 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 
 import '../../services/database.dart';
 import '../../services/shared_prefences.dart';
 import '../../utils/app_widget.dart';
+
 // ignore: must_be_immutable
 class Details extends StatefulWidget {
   String image, name, detail, price;
@@ -168,7 +168,7 @@ class _DetailsState extends State<Details> {
                         style: AppWidget.SemiBoldTextFieldStyle(),
                       ),
                       Text(
-                        "\$$total",
+                        "\$" + total.toString(),
                         style: AppWidget.HeadlinextFieldStyle(),
                       )
                     ],
@@ -181,7 +181,7 @@ class _DetailsState extends State<Details> {
                         "Total": total.toString(),
                         "Image": widget.image
                       };
-                      await DatabaseMethods().addFoodToCart(addFoodtoCart, id!);
+                      await DatabaseMethods().addFoodToCart(addFoodtoCart,id!);
                          ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
               backgroundColor: Colors.orangeAccent,
               content: Text(

@@ -1,6 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 import 'package:food_app/app/screens/detail/detail_screen.dart';
 import 'package:food_app/app/services/database.dart';
 
@@ -16,12 +15,14 @@ class HomeScreen extends StatefulWidget {
 
 class _HomeScreenState extends State<HomeScreen> {
   bool icecream = false, pizza = false, salad = false, buger = false;
+
   Stream? foodItemStream;
   String? name;
 
   ontheload() async {
-    foodItemStream = await DatabaseMethods().getFoodItem("Pizza");
+    foodItemStream = DatabaseMethods().getFoodItemByCategory("Pizza");
     name = await SharedPreferenceHelper().getUserName();
+
     setState(() {});
   }
 
@@ -45,9 +46,16 @@ class _HomeScreenState extends State<HomeScreen> {
                   return GestureDetector(
                     onTap: () {
                       Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                              builder: (context) =>  Details(detail: ds["Detail"], image: ds["Image"], price: ds["Price"], name: ds["Name"],)));
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => Details(
+                            detail: ds["Detail"],
+                            image: ds["Image"],
+                            price: ds["Price"],
+                            name: ds["Name"],
+                          ),
+                        ),
+                      );
                     },
                     child: Container(
                       margin: const EdgeInsets.all(5),
@@ -55,32 +63,33 @@ class _HomeScreenState extends State<HomeScreen> {
                         elevation: 5.0,
                         borderRadius: BorderRadius.circular(20),
                         child: Container(
-                            padding: const EdgeInsets.all(14),
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                ClipRRect(
-                                  borderRadius: BorderRadius.circular(20),
-                                  child: Image.network(
-                                    ds['Image'],
-                                    height: 150.0,
-                                    width: 150.0,
-                                    fit: BoxFit.cover,
-                                  ),
+                          padding: const EdgeInsets.all(14),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              ClipRRect(
+                                borderRadius: BorderRadius.circular(20),
+                                child: Image.network(
+                                  ds['Image'],
+                                  height: 150.0,
+                                  width: 150.0,
+                                  fit: BoxFit.cover,
                                 ),
-                                Text(ds['Name'],
-                                    style: AppWidget.LightTextFieldStyle()),
-                                const SizedBox(height: 5.0),
-                                Text("Fresh and Healthy",
-                                    style: AppWidget.SemiBoldTextFieldStyle()),
-                                const SizedBox(height: 5.0),
-                                Text(
-                                  // ignore: prefer_interpolation_to_compose_strings
-                                  "\$" + ds['Price'],
-                                  style: AppWidget.LightTextFieldStyle(),
-                                )
-                              ],
-                            )),
+                              ),
+                              Text(ds['Name'],
+                                  style: AppWidget.LightTextFieldStyle()),
+                              const SizedBox(height: 5.0),
+                              Text("Fresh and Healthy",
+                                  style: AppWidget.SemiBoldTextFieldStyle()),
+                              const SizedBox(height: 5.0),
+                              Text(
+                                // ignore: prefer_interpolation_to_compose_strings
+                                "\$" + ds['Price'],
+                                style: AppWidget.LightTextFieldStyle(),
+                              )
+                            ],
+                          ),
+                        ),
                       ),
                     ),
                   );
@@ -105,65 +114,75 @@ class _HomeScreenState extends State<HomeScreen> {
                   return GestureDetector(
                     onTap: () {
                       Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                              builder: (context) =>  Details(detail: ds["Detail"], image: ds["Image"], price: ds["Price"], name: ds["Name"],)));
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => Details(
+                            detail: ds["Detail"],
+                            image: ds["Image"],
+                            price: ds["Price"],
+                           name: ds["Name"],
+                          ),
+                        ),
+                      );
                     },
                     child: Container(
-                      margin: const EdgeInsets.only(right: 10,bottom: 10),
+                      margin: const EdgeInsets.only(right: 10, bottom: 10),
                       child: Material(
                         elevation: 5.0,
                         borderRadius: BorderRadius.circular(20),
                         child: Container(
-                            padding: const EdgeInsets.all(5.0),
-                            child: Row(
-                                crossAxisAlignment: CrossAxisAlignment.start,
+                          padding: const EdgeInsets.all(5.0),
+                          child: Row(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              ClipRRect(
+                                borderRadius: BorderRadius.circular(20),
+                                child: Image.network(
+                                  ds["Image"],
+                                  height: 85.0,
+                                  width: 85.0,
+                                  fit: BoxFit.cover,
+                                ),
+                              ),
+                              const SizedBox(
+                                width: 20.0,
+                              ),
+                              Column(
                                 children: [
-                                  ClipRRect(
-                                    borderRadius: BorderRadius.circular(20),
-                                    child: Image.network(
-                                      ds["Image"],
-                                        height: 85.0,
-                                        width: 85.0,
-                                        fit: BoxFit.cover),
+                                  Container(
+                                    width:
+                                        MediaQuery.of(context).size.width / 2.0,
+                                    child: Text(
+                                      ds["Name"],
+                                      style: AppWidget.boldTextFieldStyle(),
+                                    ),
                                   ),
                                   const SizedBox(
-                                    width: 20.0,
+                                    height: 5.0,
                                   ),
-                                  Column(
-                                    children: [
-                                      Container(
-                                          width: MediaQuery.of(context)
-                                                  .size
-                                                  .width /
-                                              2.0,
-                                          child: Text(
-                                              ds["Name"],
-                                              style: AppWidget
-                                                  .boldTextFieldStyle())),
-                                      const SizedBox(
-                                        height: 5.0,
-                                      ),
-                                      Container(
-                                          width: MediaQuery.of(context)
-                                                  .size
-                                                  .width /
-                                              2.0,
-                                          child: Text("Honey goot cheese",
-                                              style: AppWidget
-                                                  .SemiBoldTextFieldStyle())),
-                                      Container(
-                                          width: MediaQuery.of(context)
-                                                  .size
-                                                  .width /
-                                              2.0,
-                                          // ignore: prefer_interpolation_to_compose_strings
-                                          child: Text("\$"+ds["Price"],
-                                              style: AppWidget
-                                                  .LightTextFieldStyle()))
-                                    ],
+                                  Container(
+                                    width:
+                                        MediaQuery.of(context).size.width / 2.0,
+                                    child: Text(
+                                      ds["Detail"],
+                                      style: AppWidget.SemiBoldTextFieldStyle(),
+                                    ),
+                                  ),
+                                  Container(
+                                    width:
+                                        MediaQuery.of(context).size.width / 2.0,
+                                    // ignore: prefer_interpolation_to_compose_strings
+                                    child: Text(
+                                      // ignore: prefer_interpolation_to_compose_strings
+                                      "\$" + ds["Price"],
+                                      style: AppWidget.LightTextFieldStyle(),
+                                    ),
                                   )
-                                ])),
+                                ],
+                              )
+                            ],
+                          ),
+                        ),
                       ),
                     ),
                   );
@@ -177,61 +196,58 @@ class _HomeScreenState extends State<HomeScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        body: Container(
-      margin: const EdgeInsets.only(top: 50.0, left: 20.0),
-      child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-        Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
-            Text(
-                'Hello ',
-                style: AppWidget.boldTextFieldStyle()),
-            Container(
-              margin: const EdgeInsets.only(right: 20.0),
-              padding: const EdgeInsets.all(3),
-              decoration: BoxDecoration(
-                color: Colors.black,
-                borderRadius: BorderRadius.circular(8),
-                // ignore: prefer_const_constructors
+      body: SingleChildScrollView(
+        child: Container(
+          margin: const EdgeInsets.only(top: 50.0, left: 20.0),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Text(
+                    name != null ? 'Hello $name' : 'Hello Guest',
+                    style: AppWidget.boldTextFieldStyle(),
+                  ),
+                  Container(
+                    margin: const EdgeInsets.only(right: 20.0),
+                    padding: const EdgeInsets.all(3),
+                    decoration: BoxDecoration(
+                      color: Colors.black,
+                      borderRadius: BorderRadius.circular(8),
+                    ),
+                    child: const Icon(
+                      Icons.shopping_cart_outlined,
+                      color: Colors.white,
+                    ),
+                  )
+                ],
               ),
-              // ignore: prefer_const_constructors
-              child: Icon(
-                Icons.shopping_cart_outlined,
-                color: Colors.white,
+              const SizedBox(
+                height: 10.0,
               ),
-            )
-          ],
+              Text("Delicious Food", style: AppWidget.HeadlinextFieldStyle()),
+              Text("Discover and Get Great Food",
+                  style: AppWidget.LightTextFieldStyle()),
+              const SizedBox(
+                height: 20,
+              ),
+              Container(
+                  margin: const EdgeInsets.only(right: 20.0),
+                  child: showItem()),
+              const SizedBox(
+                height: 20.0,
+              ),
+              Container(height: 270, child: allItems()),
+              const SizedBox(
+                height: 5.0,
+              ),
+              allItemsVertical(),
+            ],
+          ),
         ),
-        const SizedBox(
-          height: 10.0,
-        ),
-        Text("Delicious Food", style: AppWidget.HeadlinextFieldStyle()),
-        Text("Discover and Get Great Food",
-            style: AppWidget.LightTextFieldStyle()),
-        const SizedBox(
-          height: 20,
-        ),
-        Container(
-            margin: const EdgeInsets.only(right: 20.0), child: showItem()),
-        const SizedBox(
-          height: 20.0,
-        ),
-        Container(height: 270, child: allItems()),
-        const SizedBox(
-          height: 5.0,
-        ),
-        allItemsVertical(),
-        // SingleChildScrollView(
-        //   scrollDirection: Axis.vertical,
-        //   child: Column(
-        //     crossAxisAlignment: CrossAxisAlignment.start,
-        //     children: [
-
-        //     ],
-        //   ),
-        // ),
-      ]),
-    ));
+      ),
+    );
   }
 
   Widget showItem() {
@@ -244,7 +260,7 @@ class _HomeScreenState extends State<HomeScreen> {
             icecream = false;
             salad = false;
             buger = false;
-            foodItemStream=await DatabaseMethods().getFoodItem("Pizza");
+            foodItemStream = DatabaseMethods().getFoodItemByCategory("Pizza");
             setState(() {});
           },
           child: Material(
@@ -264,12 +280,12 @@ class _HomeScreenState extends State<HomeScreen> {
                   ))),
         ),
         GestureDetector(
-          onTap: () async{
+          onTap: () async {
             pizza = false;
             icecream = true;
             salad = false;
             buger = false;
-            foodItemStream=await DatabaseMethods().getFoodItem("Ice-cream");
+            foodItemStream = DatabaseMethods().getFoodItemByCategory("Ice-cream");
 
             setState(() {});
           },
@@ -295,7 +311,7 @@ class _HomeScreenState extends State<HomeScreen> {
             icecream = false;
             salad = true;
             buger = false;
-             foodItemStream=await DatabaseMethods().getFoodItem("Salad");
+            foodItemStream = DatabaseMethods().getFoodItemByCategory("Salad");
 
             setState(() {});
           },
@@ -321,7 +337,7 @@ class _HomeScreenState extends State<HomeScreen> {
             icecream = false;
             salad = false;
             buger = true;
-            foodItemStream=await DatabaseMethods().getFoodItem("Burger");
+            foodItemStream = DatabaseMethods().getFoodItemByCategory("Burger");
 
             setState(() {});
           },

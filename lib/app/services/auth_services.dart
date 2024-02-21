@@ -1,4 +1,7 @@
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter/material.dart';
+
+import '../screens/auth/login_screen.dart';
 
 class AuthMethods{
   final FirebaseAuth auth= FirebaseAuth.instance;
@@ -7,12 +10,12 @@ class AuthMethods{
     return await auth.currentUser;
   }
 
-  Future SignOut() async{
-    await FirebaseAuth.instance.signOut();
-  }
+  // ignore: non_constant_identifier_names
+ Future<void> signOut(BuildContext context) async {
+    await auth.signOut();
+Navigator.pushReplacement(
+      context,
+      MaterialPageRoute(builder: (context) => LogIn()),
+    );  }
 
-  Future deleteuser() async{
-    User? user=await FirebaseAuth.instance.currentUser;
-    user?.delete();
-  }
 }

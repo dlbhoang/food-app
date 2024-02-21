@@ -7,6 +7,7 @@ class SharedPreferenceHelper{
   static String userEmailKey="USEREMAILKEY";
   static String userWalletKey="USERWALLETKEY";
   static String userProfileKey="USERPROFILEKEY";
+  static String userPurchaseConfirmedKey="USERPURCHASECONFIRMEDKEY";
 
   Future<bool> saveUserId(String getUserId) async {
     SharedPreferences prefs= await SharedPreferences.getInstance();
@@ -18,12 +19,12 @@ class SharedPreferenceHelper{
     return prefs.setString(userNameKey, getUserName);
   }
 
-    Future<bool> saveUserEmail(String getUserEmail) async {
+  Future<bool> saveUserEmail(String getUserEmail) async {
     SharedPreferences prefs= await SharedPreferences.getInstance();
     return prefs.setString(userEmailKey, getUserEmail);
   }
 
-    Future<bool> saveUserWallet(String getUserWallet) async {
+  Future<bool> saveUserWallet(String getUserWallet) async {
     SharedPreferences prefs= await SharedPreferences.getInstance();
     return prefs.setString(userWalletKey, getUserWallet);
   }
@@ -48,15 +49,24 @@ class SharedPreferenceHelper{
     return prefs.getString(userWalletKey);
   }
 
-   Future<bool> saveUserProfile(String getUserProfile) async {
+  Future<bool> saveUserProfile(String getUserProfile) async {
     SharedPreferences prefs= await SharedPreferences.getInstance();
     return prefs.setString(userProfileKey, getUserProfile);
   }
 
-    Future<String?> getUserProfile() async{
+  Future<String?> getUserProfile() async{
     SharedPreferences prefs=await SharedPreferences.getInstance();
     return prefs.getString(userProfileKey);
   }
 
-}
+  Future<bool> saveUserPurchaseConfirmed(bool purchaseConfirmed) async {
+    SharedPreferences prefs= await SharedPreferences.getInstance();
+    return prefs.setBool(userPurchaseConfirmedKey, purchaseConfirmed); 
+  }
 
+  Future<bool?> getUserPurchaseConfirmed() async{
+    SharedPreferences prefs=await SharedPreferences.getInstance();
+    return prefs.getBool(userPurchaseConfirmedKey); 
+  }
+
+}
